@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { WebhookModule } from './modules/webhooks/webhook.module';
 
 @Module({
   imports: [
@@ -15,8 +16,10 @@ import * as Joi from 'joi';
         PORT: Joi.number().default(8000),
         COOKIE: Joi.string().default(''),
         PREFIX: Joi.string().default('api'),
+        FACEBOOK_ACCESS_TOKEN: Joi.string(),
       }),
     }),
+    WebhookModule,
   ],
   controllers: [AppController],
   providers: [ConfigService],
