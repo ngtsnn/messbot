@@ -4,14 +4,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import cors = require('cors');
 import cookieParser = require('cookie-parser');
-import { ValidationPipe,  } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Pipes
   app.useGlobalPipes(
-
     new ValidationPipe({
       transform: true,
       skipNullProperties: true,

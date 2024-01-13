@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
-import { WebhookModule } from './modules/webhooks/webhook.module';
+import { WebhookModule } from './modules/telegram/webhook.module';
 
 @Module({
   imports: [
@@ -16,7 +16,8 @@ import { WebhookModule } from './modules/webhooks/webhook.module';
         PORT: Joi.number().default(8000),
         COOKIE: Joi.string().default(''),
         PREFIX: Joi.string().default('api'),
-        FACEBOOK_ACCESS_TOKEN: Joi.string(),
+        TELEGRAM_ACCESS_TOKEN: Joi.string(),
+        TELEGRAM_SECRET_TOKEN: Joi.string(),
       }),
     }),
     WebhookModule,
