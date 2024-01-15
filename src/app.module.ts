@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { WebhookModule } from './modules/telegram/webhook.module';
+import { PrismaModule } from './modules/prisma/prisma.modules';
 
 @Module({
   imports: [

@@ -23,5 +23,4 @@ export interface TeleMessageBody {
 export interface ISendMessage {
   id: number;
   text: string;
-  parseMode?: string;
 }

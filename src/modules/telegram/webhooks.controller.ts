@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { WebhookService } from './webhooks.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { TeleMessageBody } from './webhook.dto';
+import TelegramBot from 'src/types/telegram';
 
 @Controller('/telegram')
 @ApiTags('Messenger Webhooks')
@@ -13,19 +14,16 @@ export class WebhookController {
   ) {}
 
   @Get('/')
-  async getMessage(@Body() body: any) {
+  async getMessage(@Query() query: any) {
     return 'hello';
   }
 
   @Post('/')
-  async onMessage(@Body() body: TeleMessageBody) {
-    const responseToUser = await this.service.handleCommand(body.message.text);
+  async onMessage(@Body() body: any) {
+    if (body.message) {
+      return await this.service.handleMessages(body?.message);
+    }
 
-    this.service.sendMsgToUser({
-      id: body.message.chat.id,
-      text: responseToUser,
-    });
-
-    return 'hello';
+    return false;
   }
 }
