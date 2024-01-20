@@ -22,8 +22,19 @@ export class BudgetService {
 
     try {
       const now = new Date();
-      const b = await this.prisma.budget.create({
-        data: {
+      const b = await this.prisma.budget.upsert({
+        where: {
+          userId_category: {
+            userId: params.user,
+            category: params.category,
+          },
+        },
+        update: {
+          amount: params.amount,
+          updatedAt: now,
+          period: 'M',
+        },
+        create: {
           userId: params.user,
           category: params.category,
           amount: params.amount,
