@@ -10,6 +10,7 @@ import { BudgetService } from '../budget/budget.service';
 import { UserService } from '../user/user.service';
 import { AddExpense } from '../expense/expense.dto';
 import { ExpenseService } from '../expense/expense.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class WebhookService {
@@ -21,6 +22,7 @@ export class WebhookService {
     private budgetService: BudgetService,
     private expenseService: ExpenseService,
     private userService: UserService,
+    private authService: AuthService,
   ) {
     const botToken = config.get(
       'TELEGRAM_ACCESS_TOKEN',
@@ -88,6 +90,17 @@ export class WebhookService {
         });
       }
 
+      case 'login': {
+
+        this.userService.createUser({
+          id: userId,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          language_code: user.language_code,
+        });
+        return await this.login(chatId, userId);
+      }
+
       default: {
         return await this.fallback(chatId);
       }
@@ -105,8 +118,7 @@ export class WebhookService {
 
       return res;
     } catch (error) {
-      console.log('🚀 ~ WebhookService ~ sendMsgToUser ~ error:', error);
-
+      console.log('🚀 ~ WebhookService ~ sendMsgToUser ~ error:', error.message);
       return false;
     }
   }
@@ -199,6 +211,25 @@ export class WebhookService {
       },
     );
     return false;
+  }
+
+  private async login (chatId: number, userId: number) {
+    try {
+      const token = await this.authService.generateMagicToken(userId);
+
+      await this.sendMsgToUser(
+        {
+          id: chatId,
+          text: `${process.env.API_URL}/auth/magic?token=${token}`,
+        },
+        {
+          parse_mode: 'Markdown',
+        },
+      );
+    } catch (error) {
+      console.log("🚀 ~ WebhookService ~ login ~ error:", error);
+      return await this.serverError(chatId);
+    }
   }
 
   private async addBudget(chatId: number, params: AddBudget) {

@@ -4,6 +4,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { WebhookModule } from './modules/telegram/webhook.module';
 import { PrismaModule } from './modules/prisma/prisma.modules';
+import { JwtModule } from '@nestjs/jwt';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtStrategy } from './common/guards/jwt.strategy';
 
 @Module({
   imports: [
@@ -17,13 +21,23 @@ import { PrismaModule } from './modules/prisma/prisma.modules';
         PORT: Joi.number().default(8000),
         COOKIE: Joi.string().default(''),
         PREFIX: Joi.string().default('api'),
-        TELEGRAM_ACCESS_TOKEN: Joi.string(),
-        TELEGRAM_SECRET_TOKEN: Joi.string(),
+        TELEGRAM_ACCESS_TOKEN: Joi.string().required(),
+        TELEGRAM_SECRET_TOKEN: Joi.string().required(),
+        POSTGRES_DB_URL: Joi.string().required(),
+        MAGIC_SECRET: Joi.string().required(),
+        ACCESS_SECRET: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
       }),
     }),
+    RedisModule.forRoot({
+      type: 'single',
+      url: process.env.REDIS_URL,
+    }),
+    JwtModule.register({ global: true }),
     WebhookModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [ConfigService],
+  providers: [ConfigService, JwtStrategy],
 })
 export class AppModule {}

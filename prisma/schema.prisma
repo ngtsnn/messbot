@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime
   Budget        Budget[]
   Expenses      Expenses[]
+  Sessions      Sessions[]
 }
 
 enum BudgetPeriod {
@@ -52,4 +53,15 @@ model Expenses {
 
   budget Budget @relation(fields: [budgetId], references: [id])
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model Sessions {
+  id       String @id @default(cuid())
+  userId   BigInt
+  deviceId String
+  token    String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, deviceId])
 }

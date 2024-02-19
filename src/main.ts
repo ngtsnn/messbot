@@ -6,6 +6,7 @@ import cors = require('cors');
 import cookieParser = require('cookie-parser');
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -18,6 +19,9 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  // interceptors
+  app.useGlobalInterceptors(new LoggingInterceptor())
 
   // Middlewares
   app.use(
