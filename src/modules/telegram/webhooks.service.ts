@@ -222,7 +222,7 @@ export class WebhookService {
       await this.sendMsgToUser(
         {
           id: chatId,
-          text: `🔑 Click [here](${process.env.API_URL}/auth/magic?token=${token}) to login
+          text: `🔑 Click [here](${process.env.APP_URL}/auth/magic?token=${token}) to login
 Happy browsing! 🚀
           `,
         },

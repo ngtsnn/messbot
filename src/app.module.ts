@@ -27,6 +27,8 @@ import { JwtStrategy } from './common/guards/jwt.strategy';
         MAGIC_SECRET: Joi.string().required(),
         ACCESS_SECRET: Joi.string().required(),
         REDIS_URL: Joi.string().required(),
+        API_URL: Joi.string().required(),
+        APP_URL: Joi.string().required(),
       }),
     }),
     RedisModule.forRoot({
