@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { TeleMessageBody } from './webhook.dto';
 import TelegramBot from 'src/types/telegram';
 
-@Controller('/telegram')
+@Controller('/webhook/telegram')
 @ApiTags('Messenger Webhooks')
 export class WebhookController {
   constructor(

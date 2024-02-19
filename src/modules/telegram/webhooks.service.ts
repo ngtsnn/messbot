@@ -91,7 +91,6 @@ export class WebhookService {
       }
 
       case 'login': {
-
         this.userService.createUser({
           id: userId,
           first_name: user.first_name,
@@ -118,7 +117,10 @@ export class WebhookService {
 
       return res;
     } catch (error) {
-      console.log('🚀 ~ WebhookService ~ sendMsgToUser ~ error:', error.message);
+      console.log(
+        '🚀 ~ WebhookService ~ sendMsgToUser ~ error:',
+        error.message,
+      );
       return false;
     }
   }
@@ -213,21 +215,23 @@ export class WebhookService {
     return false;
   }
 
-  private async login (chatId: number, userId: number) {
+  private async login(chatId: number, userId: number) {
     try {
       const token = await this.authService.generateMagicToken(userId);
 
       await this.sendMsgToUser(
         {
           id: chatId,
-          text: `${process.env.API_URL}/auth/magic?token=${token}`,
+          text: `🔑 Click [here](${process.env.API_URL}/auth/magic?token=${token}) to login
+Happy browsing! 🚀
+          `,
         },
         {
           parse_mode: 'Markdown',
         },
       );
     } catch (error) {
-      console.log("🚀 ~ WebhookService ~ login ~ error:", error);
+      console.log('🚀 ~ WebhookService ~ login ~ error:', error);
       return await this.serverError(chatId);
     }
   }
