@@ -49,4 +49,26 @@ export class BudgetService {
       throw new InternalServerErrorException();
     }
   }
+
+  async getBudgetByUser (user: number) {
+    try {
+      const res =  await this.prisma.budget.findMany({
+        where: {
+          userId: user,
+        },
+        select: {
+          id: true,
+          category: true,
+          amount: true,
+          createdAt: true,
+          updatedAt: true,
+          period: true
+        },
+      });
+      return res;
+    } catch (error) {
+      return [];
+    }
+
+  }
 }

@@ -4,3 +4,8 @@ export type AddExpense = {
   amount: number;
   product?: string;
 };
+
+export type GetExpense = {
+  user: number;
+  category?: string;
+}

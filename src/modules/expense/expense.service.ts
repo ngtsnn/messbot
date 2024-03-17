@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as Joi from 'joi';
-import { AddExpense } from './expense.dto';
+import { AddExpense, GetExpense } from './expense.dto';
 
 @Injectable()
 export class ExpenseService {
@@ -50,6 +50,32 @@ export class ExpenseService {
     } catch (error) {
       console.log('🚀 ~ ExpenseService ~ addExpense ~ error:', error);
       throw new InternalServerErrorException();
+    }
+  }
+
+  async getExpense(params: GetExpense ) {
+    try {
+      return await this.prisma.expenses.findMany({
+        where: {
+          userId: params.user,
+          budgetId: params.category,
+        },
+        select: {
+          amount: true,
+          product: true,
+          createdAt: true,
+          updatedAt: true,
+          id: true,
+          budgetId: true,
+          budget: {
+            select: {
+              category: true
+            }
+          }
+        }
+      });
+    } catch (error) {
+      return []
     }
   }
 }

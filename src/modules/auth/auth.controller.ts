@@ -33,8 +33,7 @@ export class AuthController {
       );
 
       res.cookie('refreshToken', refreshToken, {
-        domain: req.hostname,
-        sameSite: 'lax',
+        sameSite: 'none',
         expires: new Date(Date.now() + 120960000), // 2 weeks
         httpOnly: true,
         secure: true,
@@ -60,8 +59,7 @@ export class AuthController {
     const accessToken = this.authService.generateAccessToken(userId);
 
     res.cookie('accessToken', accessToken, {
-      domain: req.hostname,
-      sameSite: 'lax',
+      sameSite: 'none',
       expires: new Date(Date.now() + 1800000), // 30 mins
       httpOnly: true,
       secure: true,

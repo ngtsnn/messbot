@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtStrategy } from './common/guards/jwt.strategy';
+import { BudgetModule } from './modules/budget/budget.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { JwtStrategy } from './common/guards/jwt.strategy';
     JwtModule.register({ global: true }),
     WebhookModule,
     AuthModule,
+    BudgetModule,
   ],
   controllers: [AppController],
   providers: [ConfigService, JwtStrategy],

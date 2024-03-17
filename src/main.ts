@@ -27,11 +27,12 @@ async function bootstrap() {
   app.use(
     helmet(),
     cookieParser(process.env.COOKIE),
-    cors({
-      credentials: true,
-      origin: '*',
-    }),
   );
+
+  app.enableCors({
+    credentials: true,
+    origin: true,
+  });
 
   app.setGlobalPrefix(process.env.PREFIX);
 

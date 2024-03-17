@@ -218,6 +218,12 @@ export class WebhookService {
   private async login(chatId: number, userId: number) {
     try {
       const token = await this.authService.generateMagicToken(userId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(
+          '🚀 ~ WebhookService ~ login ~ token:',
+          `${process.env.APP_URL}/auth/magic?token=${token}`,
+        );
+      }
 
       await this.sendMsgToUser(
         {
