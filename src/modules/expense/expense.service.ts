@@ -6,6 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import * as Joi from 'joi';
 import { AddExpense, GetExpense } from './expense.dto';
+import { Expenses, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ExpenseService {
@@ -59,6 +60,10 @@ export class ExpenseService {
         where: {
           userId: params.user,
           budgetId: params.category,
+          createdAt: {
+            gte: params?.from ? new Date(params?.from) : undefined,
+            lte: params?.to ? new Date(params?.to) : undefined,
+          },
         },
         select: {
           amount: true,
@@ -69,10 +74,12 @@ export class ExpenseService {
           budgetId: true,
           budget: {
             select: {
-              category: true
-            }
-          }
-        }
+              category: true,
+            },
+          },
+        },
+        skip: params?.skip,
+        take: params?.limit,
       });
     } catch (error) {
       return []

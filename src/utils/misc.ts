@@ -1,4 +1,4 @@
-import { Logger } from "@nestjs/common";
+import { Logger } from '@nestjs/common';
 
 interface ResLog {
   request: string;
@@ -13,7 +13,7 @@ export const logWithResTime = (res: ResLog) => {
   const range = res.to - res.from;
   const isFast = range < SLOW_RESPONSE;
 
-  const status = isFast ? "🟢" : "🟡";
+  const status = isFast ? '🟢' : '🟡';
   const msg = `
     Response: ${res.method} - ${res.request}
     Payload: ${JSON.stringify(res.payload)}
@@ -26,4 +26,5 @@ export const logWithResTime = (res: ResLog) => {
   return msg;
 };
 
-export const wait = (time: number) => new Promise((res) => setTimeout(res, time));
+export const wait = (time: number) =>
+  new Promise((res) => setTimeout(res, time));
