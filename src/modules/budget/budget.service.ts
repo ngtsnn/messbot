@@ -31,15 +31,12 @@ export class BudgetService {
         },
         update: {
           amount: params.amount,
-          updatedAt: now,
           period: 'M',
         },
         create: {
           userId: params.user,
           category: params.category,
           amount: params.amount,
-          createdAt: now,
-          updatedAt: now,
           period: 'M',
         },
       });

@@ -31,8 +31,6 @@ export class UserService {
       const b = await this.prisma.user.upsert({
         create: {
           ...params,
-          createdAt: now,
-          updatedAt: now,
         },
         where: {
           id: params.id,

@@ -26,8 +26,7 @@ export class SessionService {
       const publicKey = session.token;
 
       const res = this.jwtService.verify(token, {
-        algorithms: ['RS256'],
-        publicKey
+        secret: publicKey
       });
 
 

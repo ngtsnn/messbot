@@ -11,12 +11,12 @@ datasource db {
 }
 
 model User {
-  id            BigInt     @id @default(-1)
+  id            BigInt     @id @default(-1) @db.BigInt
   first_name    String?
   last_name     String?
   language_code String?    @default("vi")
-  createdAt     DateTime
-  updatedAt     DateTime
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   Budget        Budget[]
   Expenses      Expenses[]
   Sessions      Sessions[]
@@ -33,8 +33,8 @@ model Budget {
   category  String       @default("unknown")
   userId    BigInt
   amount    Float
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   user      User         @relation(fields: [userId], references: [id])
   period    BudgetPeriod @default(M)
   Expenses  Expenses[]
@@ -48,8 +48,8 @@ model Expenses {
   budgetId  String
   amount    Float
   product   String   @default("")
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   budget Budget @relation(fields: [budgetId], references: [id])
   user   User   @relation(fields: [userId], references: [id])

@@ -42,9 +42,7 @@ export class ExpenseService {
         data: {
           userId: params.user,
           budgetId: budget.id,
-          amount: params.amount,
-          createdAt: now,
-          updatedAt: now,
+          amount: params.amount
         },
       });
       return b;

@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Redis } from 'ioredis';
 import otpGenerator = require('otp-generator');
 import { PrismaService } from '../prisma/prisma.service';
+import nanoid = require('nanoid');
 import { generateKeyPairSync } from 'crypto';
 
 const EXPIRE = 300; // 5m
@@ -56,17 +57,12 @@ export class AuthService {
   }
 
   async generateRefreshToken(userId: number, deviceId: string) {
-    const { privateKey, publicKey } = generateKeyPairSync('rsa', {
-      modulusLength: 2048,
-      publicKeyEncoding: { type: 'pkcs1', format: 'pem' },
-      privateKeyEncoding: { type: 'pkcs1', format: 'pem' },
-    });
 
+    const publicKey = nanoid.nanoid()
     const token = this.jwtService.sign(
       { userId, deviceId },
       {
-        algorithm: 'RS256',
-        privateKey,
+        secret: publicKey,
       },
     );
 
