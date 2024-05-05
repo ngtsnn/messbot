@@ -5,6 +5,7 @@ import { VerifyMagicBody } from './auth.dto';
 import { Request, Response } from 'express';
 import { DeviceInterceptor } from 'src/common/interceptors/device.interceptors';
 import { RefreshGuard } from 'src/common/guards/refresh.strategy';
+import { JwtGuard } from 'src/common/guards/jwt.strategy';
 
 @Controller('/auth')
 @ApiTags('Auth')
@@ -70,6 +71,33 @@ export class AuthController {
     return true;
   }
 
+  @UseGuards(JwtGuard)
+  @Post('logout')
+  @Get('logout')
+  async logout(@Req() req: Request & { user: number, deviceId: string }, @Res() res: Response) {
+    const userId = req.user;
+    const deviceId = req.deviceId;
+    this.authService.revokeAccessToken(userId, deviceId)
 
+    if (!userId) {
+      res.status(401).send(false);
+      return false;
+    }
 
+    res.clearCookie('accessToken', {
+      sameSite: 'none',
+      httpOnly: true,
+      secure: true,
+    });
+
+    res.clearCookie('refreshToken', {
+      sameSite: 'none',
+      httpOnly: true,
+      secure: true,
+    });
+
+    res.status(200).send(true);
+
+    return true;
+  }
 }

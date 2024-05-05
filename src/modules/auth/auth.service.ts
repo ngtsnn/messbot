@@ -6,7 +6,8 @@ import { Redis } from 'ioredis';
 import otpGenerator = require('otp-generator');
 import { PrismaService } from '../prisma/prisma.service';
 import nanoid = require('nanoid');
-import { generateKeyPairSync } from 'crypto';
+import { createHash, createHmac, generateKeyPairSync } from 'crypto';
+import { TelegramUser } from './oauth.dto';
 
 const EXPIRE = 300; // 5m
 const MAGIC_KEY = 'magic_salt';
@@ -57,8 +58,7 @@ export class AuthService {
   }
 
   async generateRefreshToken(userId: number, deviceId: string) {
-
-    const publicKey = nanoid.nanoid()
+    const publicKey = nanoid.nanoid();
     const token = this.jwtService.sign(
       { userId, deviceId },
       {
@@ -91,8 +91,6 @@ export class AuthService {
   }
 
   verifyAccesstoken(token: string) {
-
-
     try {
       const verified = this.jwtService.verify(token, {
         secret: this.configService.get('ACCESS_SECRET', 'ACCESS_SECRET'),
@@ -108,9 +106,34 @@ export class AuthService {
       }
 
       return userId;
-
     } catch (error) {
       return false;
     }
+  }
+
+  verifyTeleOauth({ hash, ...userData }: TelegramUser) {
+    const BOT_KEY = this.configService.get('TELEGRAM_ACCESS_TOKEN', 'BOT_KEY');
+    const secretKey = createHash('sha256').update(BOT_KEY).digest();
+
+    // this is the data to be authenticated i.e. telegram user id, first_name, last_name etc.
+    const dataCheckString = Object.keys(userData)
+      .sort()
+      .map((key) => `${key}=${userData[key]}`)
+      .join('\n');
+
+    // run a cryptographic hash function over the data to be authenticated and the secret
+    const hmac = createHmac('sha256', secretKey)
+      .update(dataCheckString)
+      .digest('hex');
+
+    // compare the hash that you calculate on your side (hmac) with what Telegram sends you (hash) and return the result
+    return hmac === hash;
+  }
+
+  async revokeAccessToken(userId: number, deviceId: string) {
+    return await this.prisma.sessions.update({
+      where: { userId_deviceId: { userId, deviceId } },
+      data: { token: '' },
+    });
   }
 }

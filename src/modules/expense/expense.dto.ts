@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
-import { IsNumber, IsOptional, Min } from "class-validator";
+import { IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { HasPagination } from "src/utils/dto";
 
 export type AddExpense = {
@@ -46,3 +46,35 @@ export type GetExpense = {
   user: number;
   category?: string;
 } & ExpenseQuery;
+
+export class AddExpenseBody {
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @IsString()
+  @Type(() => String)
+  category: string;
+
+  @ApiProperty({
+    type: Number,
+    minimum: 0,
+    required: true,
+  })
+  @IsNumber({
+    allowNaN: false,
+    allowInfinity: false,
+  })
+  @Min(0)
+  @Type(() => Number)
+  amount: number;
+
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @Type(() => String)
+  product?: string;
+}
